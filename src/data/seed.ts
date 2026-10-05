@@ -18,7 +18,8 @@ const makeRecord = (
 ): ArchiveRecord => ({
   id, group, title, date, people, places, identifier, medium, extent, rights, notes,
   updatedAt: now,
-  status: 'unreviewed'
+  status: 'unreviewed',
+  provenance: { source: 'master', revision: 1 }
 });
 
 export const seedRecords = (): ArchiveRecord[] => [
@@ -47,7 +48,12 @@ export const seedState = (): ArchiveState => {
     records,
     matches: computeMatches(records),
     merges: [],
-    audit: [{ id: 'seed', at: now, action: '初始化数据', detail: '导入两组示例口述史与手稿记录并完成首轮匹配', recordIds: [] }],
+    audit: [{ id: 'seed', at: now, action: '初始化数据', detail: '导入两组示例口述史与手稿记录并完成首轮匹配', recordIds: [], source: '馆内主档 · r1' }],
+    packages: [],
+    jobs: [],
+    conflicts: [],
+    rollbackPoints: [],
+    failedPackages: [],
     activeMatchId: '',
     selectedRecordIds: [],
     hydrated: false

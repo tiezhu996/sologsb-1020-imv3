@@ -87,6 +87,19 @@ export function computeMatches(records: ArchiveRecord[]): MatchCandidate[] {
   return matches.sort((a, b) => b.score - a.score);
 }
 
+/**
+ * 修订包导入后重新计算候选匹配，但保留已有队列中每条匹配的复核状态，
+ * 只补充新出现的候选、移除已失效的候选，不覆盖人工结论。
+ */
+export function reconcileMatches(existing: MatchCandidate[], records: ArchiveRecord[]): MatchCandidate[] {
+  const fresh = computeMatches(records);
+  const previous = new Map(existing.map((match) => [match.id, match]));
+  return fresh.map((match) => {
+    const kept = previous.get(match.id);
+    return kept ? { ...match, status: kept.status, reviewedAt: kept.reviewedAt } : match;
+  });
+}
+
 export function fieldValue(record: ArchiveRecord, field: FieldKey): string {
   return displayValue(record, field);
 }
